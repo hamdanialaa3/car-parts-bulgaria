@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { Search, Menu, Heart, ShoppingCart, User, Globe } from 'lucide-react';
+import { Search, Menu, Heart, ShoppingCart, User, Globe, Wrench } from 'lucide-react';
 import Link from 'next/link';
 
 interface HeaderProps {
@@ -24,8 +24,9 @@ export default function Header({ locale }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link href={'/'} className="text-2xl font-bold text-blue-600">
-              CarParts.bg
+            <Link href={'/'} className="flex items-center space-x-2 text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
+              <Wrench className="h-8 w-8" />
+              <span>CarParts.bg</span>
             </Link>
           </div>
 

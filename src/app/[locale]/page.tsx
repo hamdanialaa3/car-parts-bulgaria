@@ -72,17 +72,21 @@ export default function HomePage({ params: { locale } }: HomePageProps) {
       <Header locale={locale} />
       
       {/* Hero section - Mobile.de inspired */}
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-16 lg:py-24">
-        <div className="container-mobile">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl lg:text-6xl font-bold mb-6">
+      <section className="bg-gradient-to-br from-primary-700 via-primary-600 to-primary-800 text-white py-16 lg:py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="container-mobile relative z-10">
+          <div className="max-w-4xl mx-auto text-center animate-fade-in">
+            <h1 className="text-4xl lg:text-6xl font-bold mb-6 flex items-center justify-center flex-col">
+              <div className="flex items-center justify-center mb-4">
+                <Wrench className="w-12 h-12 lg:w-16 lg:h-16 mr-4 text-orange-400 animate-bounce-subtle" />
+              </div>
               {locale === 'bg' ? 'Намерете резервни части' : 'Find Car Parts'}
               <br />
               <span className="text-orange-400">
                 {locale === 'bg' ? 'бързо и лесно' : 'Fast & Easy'}
               </span>
             </h1>
-            <p className="text-xl lg:text-2xl mb-8 text-primary-100">
+            <p className="text-xl lg:text-2xl mb-8 text-primary-100 max-w-3xl mx-auto leading-relaxed">
               {locale === 'bg' 
                 ? 'Над 50,000 качествени резервни части от проверени доставчици в България' 
                 : 'Over 50,000 quality car parts from verified suppliers in Bulgaria'
@@ -90,7 +94,7 @@ export default function HomePage({ params: { locale } }: HomePageProps) {
             </p>
             
             {/* Main search box */}
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto animate-slide-up">
               <AdvancedSearch />
             </div>
           </div>
