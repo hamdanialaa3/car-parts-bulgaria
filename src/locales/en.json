@@ -1,0 +1,65 @@
+{
+  "common": {
+    "appName": "Car Parts Bulgaria",
+    "currency": "EUR"
+  },
+  "navigation": {
+    "home": "Home",
+    "parts": "Parts"
+  },
+  "search": {
+    "placeholder": "Search parts..."
+  },
+  "parts": {
+    "categories": {
+      "engine": "Engine",
+      "brakes": "Brakes",
+      "electrical": "Electrical",
+      "body": "Body",
+      "suspension": "Suspension",
+      "transmission": "Transmission"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome to your Vendor Dashboard!",
+    "products": "Products",
+    "orders": "Orders",
+    "sales": "Total Sales",
+    "reviews": "Reviews",
+    "addProduct": "Add Product",
+    "manageProducts": "Manage Products"
+  },
+  "profile": {
+    "title": "Vendor Profile",
+    "updateSuccess": "Profile updated successfully.",
+    "updateFail": "Failed to update profile.",
+    "changePhoto": "Change Photo",
+    "displayName": "Display Name",
+    "email": "Email",
+    "update": "Update Profile"
+  },
+  "products": {
+    "myProducts": "My Products",
+    "addNew": "Add New Product",
+    "edit": "Edit",
+    "noProducts": "No products found.",
+    "price": "Price (€)"
+  },
+  "orders": {
+    "myOrders": "My Orders",
+    "noOrders": "No orders found.",
+    "customer": "Customer",
+    "status": "Status"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "google": "Sign in with Google"
+  },
+  "footer": {
+    "copyright": "\u00a9 2025 Car Parts Bulgaria"
+  }
+}

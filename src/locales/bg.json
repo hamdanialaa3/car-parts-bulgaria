@@ -1,0 +1,65 @@
+{
+  "common": {
+    "appName": "Car Parts Bulgaria",
+    "currency": "EUR"
+  },
+  "navigation": {
+    "home": "Home",
+    "parts": "Parts"
+  },
+  "search": {
+    "placeholder": "Search parts..."
+  },
+  "parts": {
+    "categories": {
+      "engine": "Engine",
+      "brakes": "Brakes",
+      "electrical": "Electrical",
+      "body": "Body",
+      "suspension": "Suspension",
+      "transmission": "Transmission"
+    }
+  },
+  "dashboard": {
+    "welcome": "Добре дошли в таблото на продавача!",
+    "products": "Продукти",
+    "orders": "Поръчки",
+    "sales": "Общи продажби",
+    "reviews": "Отзиви",
+    "addProduct": "Добави продукт",
+    "manageProducts": "Управлявай продукти"
+  },
+  "profile": {
+    "title": "Профил на продавача",
+    "updateSuccess": "Профилът е обновен успешно.",
+    "updateFail": "Неуспешно обновяване на профила.",
+    "changePhoto": "Смени снимка",
+    "displayName": "Име за показване",
+    "email": "Имейл",
+    "update": "Обнови профила"
+  },
+  "products": {
+    "myProducts": "Моите продукти",
+    "addNew": "Добави нов продукт",
+    "edit": "Редактирай",
+    "noProducts": "Няма намерени продукти.",
+    "price": "Цена (€)"
+  },
+  "orders": {
+    "myOrders": "Моите поръчки",
+    "noOrders": "Няма намерени поръчки.",
+    "customer": "Клиент",
+    "status": "Статус"
+  },
+  "auth": {
+    "login": "Вход",
+    "signup": "Регистрация",
+    "logout": "Изход",
+    "email": "Имейл",
+    "password": "Парола",
+    "google": "Вход с Google"
+  },
+  "footer": {
+    "copyright": "\u00a9 2025 Car Parts Bulgaria"
+  }
+}

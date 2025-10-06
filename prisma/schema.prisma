@@ -1,0 +1,417 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model - Shared with existing project
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String?  @unique
+  firstName String?
+  lastName  String?
+  phone     String?
+  avatar    String?
+  
+  // Authentication
+  passwordHash String?
+  emailVerified DateTime?
+  isActive     Boolean @default(true)
+  role         UserRole @default(CUSTOMER)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  vendor           Vendor?
+  orders           Order[]
+  reviews          Review[]
+  favorites        Favorite[]
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  
+  @@map("users")
+}
+
+enum UserRole {
+  CUSTOMER
+  VENDOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+// Vendor model
+model Vendor {
+  id          String  @id @default(cuid())
+  userId      String  @unique
+  companyName String
+  description String?
+  logo        String?
+  
+  // Business Info
+  businessNumber String? @unique
+  vatNumber      String?
+  address        String
+  city           String
+  country        String @default("Bulgaria")
+  postalCode     String?
+  
+  // Contact
+  businessPhone String?
+  businessEmail String?
+  website       String?
+  
+  // Status
+  isVerified Boolean @default(false)
+  isActive   Boolean @default(true)
+  
+  // Ratings
+  rating      Float @default(0)
+  reviewCount Int   @default(0)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  user    User      @relation(fields: [userId], references: [id])
+  parts   Part[]
+  orders  Order[]
+  reviews Review[]
+  
+  @@map("vendors")
+}
+
+// Category model
+model Category {
+  id          String @id @default(cuid())
+  name        String
+  nameEn      String
+  nameBg      String
+  slug        String @unique
+  description String?
+  icon        String?
+  image       String?
+  
+  // Hierarchy
+  parentId String?
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  
+  // Status
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  parts Part[]
+  
+  @@map("categories")
+}
+
+// Part model - Main product
+model Part {
+  id          String @id @default(cuid())
+  title       String
+  description String?
+  
+  // Product details
+  partNumber String?
+  oem        String?
+  condition  PartCondition @default(USED)
+  
+  // Pricing
+  price         Float
+  originalPrice Float?
+  currency      String @default("EUR")
+  
+  // Inventory
+  stock      Int     @default(0)
+  minStock   Int     @default(0)
+  trackStock Boolean @default(true)
+  
+  // Location
+  location String?
+  
+  // Media
+  images Json? // Array of image URLs
+  
+  // Categories
+  categoryId String
+  
+  // Vendor
+  vendorId String
+  
+  // Features
+  features Json? // Key-value pairs
+  
+  // SEO
+  slug            String  @unique
+  metaTitle       String?
+  metaDescription String?
+  
+  // Status
+  isActive   Boolean @default(true)
+  isFeatured Boolean @default(false)
+  isApproved Boolean @default(false)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  category   Category    @relation(fields: [categoryId], references: [id])
+  vendor     Vendor      @relation(fields: [vendorId], references: [id])
+  orderItems OrderItem[]
+  reviews    Review[]
+  favorites  Favorite[]
+  compatibilities PartCompatibility[]
+  
+  @@map("parts")
+}
+
+enum PartCondition {
+  NEW
+  USED_LIKE_NEW
+  USED_GOOD
+  USED_FAIR
+  USED
+  REFURBISHED
+  FOR_PARTS
+}
+
+// Order model
+model Order {
+  id          String @id @default(cuid())
+  orderNumber String @unique
+  
+  // Customer
+  userId String
+  
+  // Vendor
+  vendorId String?
+  
+  // Pricing
+  subtotal     Float
+  tax          Float  @default(0)
+  shippingCost Float  @default(0)
+  total        Float
+  currency     String @default("EUR")
+  
+  // Status
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+  
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relations
+  user   User        @relation(fields: [userId], references: [id])
+  vendor Vendor?     @relation(fields: [vendorId], references: [id])
+  items  OrderItem[]
+  
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+// Order Item
+model OrderItem {
+  id String @id @default(cuid())
+  
+  orderId String
+  partId  String
+  
+  quantity Int
+  price    Float
+  total    Float
+  
+  // Relations
+  order Order @relation(fields: [orderId], references: [id])
+  part  Part  @relation(fields: [partId], references: [id])
+  
+  @@map("order_items")
+}
+
+// Review model
+model Review {
+  id      String  @id @default(cuid())
+  rating  Int // 1-5 stars
+  title   String?
+  comment String?
+  
+  // Relations
+  userId   String
+  partId   String?
+  vendorId String?
+  
+  // Status
+  isApproved Boolean @default(false)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  user   User    @relation(fields: [userId], references: [id])
+  part   Part?   @relation(fields: [partId], references: [id])
+  vendor Vendor? @relation(fields: [vendorId], references: [id])
+  
+  @@map("reviews")
+}
+
+// Favorite/Wishlist
+model Favorite {
+  id     String @id @default(cuid())
+  userId String
+  partId String
+  
+  createdAt DateTime @default(now())
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+  part Part @relation(fields: [partId], references: [id])
+  
+  @@unique([userId, partId])
+  @@map("favorites")
+}
+
+// Message system
+model Message {
+  id      String  @id @default(cuid())
+  subject String?
+  content String
+  
+  // Participants
+  senderId   String
+  receiverId String
+  
+  // Status
+  isRead Boolean @default(false)
+  
+  // Timestamps
+  createdAt DateTime  @default(now())
+  
+  // Relations
+  sender   User @relation("SentMessages", fields: [senderId], references: [id])
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  
+  @@map("messages")
+}
+
+// =====================
+// Vehicle Fitment Models
+// =====================
+
+model VehicleBrand {
+  id        String        @id @default(cuid())
+  name      String        @unique
+  slug      String        @unique
+  logo      String?
+  models    VehicleModel[]
+  compatibilities PartCompatibility[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model VehicleModel {
+  id        String         @id @default(cuid())
+  name      String
+  slug      String
+  brandId   String
+  brand     VehicleBrand   @relation(fields: [brandId], references: [id])
+  years     VehicleYear[]
+  trims     VehicleTrim[]
+  engines   VehicleEngine[]
+  compatibilities PartCompatibility[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  @@unique([brandId, name])
+}
+
+model VehicleYear {
+  id        String       @id @default(cuid())
+  year      Int
+  modelId   String
+  model     VehicleModel @relation(fields: [modelId], references: [id])
+  createdAt DateTime     @default(now())
+  compatibilities PartCompatibility[]
+  @@unique([modelId, year])
+}
+
+model VehicleTrim {
+  id        String       @id @default(cuid())
+  name      String
+  modelId   String
+  model     VehicleModel @relation(fields: [modelId], references: [id])
+  createdAt DateTime     @default(now())
+  compatibilities PartCompatibility[]
+  @@unique([modelId, name])
+}
+
+model VehicleEngine {
+  id        String       @id @default(cuid())
+  code      String
+  modelId   String
+  model     VehicleModel @relation(fields: [modelId], references: [id])
+  createdAt DateTime     @default(now())
+  compatibilities PartCompatibility[]
+  @@unique([modelId, code])
+}
+
+// Junction table linking Part to specific vehicle fitment criteria
+model PartCompatibility {
+  id          String        @id @default(cuid())
+  partId      String
+  part        Part          @relation(fields: [partId], references: [id])
+  brandId     String?
+  brand       VehicleBrand? @relation(fields: [brandId], references: [id])
+  modelId     String?
+  model       VehicleModel? @relation(fields: [modelId], references: [id])
+  yearId      String?
+  year        VehicleYear?  @relation(fields: [yearId], references: [id])
+  trimId      String?
+  trim        VehicleTrim?  @relation(fields: [trimId], references: [id])
+  engineId    String?
+  engine      VehicleEngine? @relation(fields: [engineId], references: [id])
+  notes       String?
+  createdAt   DateTime      @default(now())
+  @@index([partId])
+  @@index([brandId])
+  @@index([modelId])
+  @@index([yearId])
+}
+

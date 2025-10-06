@@ -1,0 +1,661 @@
+/**
+ * eBay-Style Seller Dashboard - Main Component
+ * 🇧🇬 Bulgaria Car Parts Platform
+ * 💰 Currency: EUR
+ * 🌐 Languages: Bulgarian/English
+ * 📏 Max 300 lines per file
+ */
+
+'use client';
+
+import { StatsCards, PerformanceMetrics, QuickActions } from './dashboard/StatsCards';
+import { OrdersTable, ListingsTable } from './dashboard/DataTables';
+import { DashboardHeader, PageTitle } from './dashboard/DashboardHeader';
+import { SellerStats, Order, Listing } from './dashboard/types';
+import { generateMockOrders, generateMockListings, generateMockStats } from './dashboard/utils';
+
+interface EbaySellerDashboardProps {
+  userId?: string;
+  userName?: string;
+}
+
+export default function EbaySellerDashboard({
+  userId = 'seller123',
+  userName = 'Bulgarian Auto Parts'
+}: EbaySellerDashboardProps = {}) {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [selectedPeriod, setSelectedPeriod] = useState('30days');
+
+  // Mock data for seller dashboard
+  const stats = {
+    totalSales: 15247.50,
+    totalOrders: 234,
+    activeListings: 156,
+    soldThisMonth: 89,
+    averageRating: 4.9,
+    totalViews: 12456,
+    watchersCount: 345,
+    messagesUnread: 7
+  };
+
+  const recentOrders = [
+    {
+      id: 'ORD-2024-001',
+      item: 'BMW E90 Brake Pads Set - Ceramic',
+      buyer: 'ivan_mechanic',
+      amount: 89.99,
+      status: 'shipped',
+      date: '2024-01-15',
+      tracking: 'DPD123456789'
+    },
+    {
+      id: 'ORD-2024-002', 
+      item: 'Mercedes W204 Air Filter Combo',
+      buyer: 'auto_repair_bg',
+      amount: 35.99,
+      status: 'processing',
+      date: '2024-01-14',
+      tracking: null
+    },
+    {
+      id: 'ORD-2024-003',
+      item: 'Audi A4 Xenon Headlights OEM',
+      buyer: 'parts_collector',
+      amount: 299.99,
+      status: 'delivered',
+      date: '2024-01-12',
+      tracking: 'DPD987654321'
+    }
+  ];
+
+  const activeListings = [
+    {
+      id: 'BP-001',
+      title: 'BMW E90 Performance Brake Pads Set',
+      type: 'auction',
+      currentBid: 89.99,
+      buyNowPrice: 129.99,
+      bidsCount: 23,
+      watchers: 67,
+      views: 1247,
+      endTime: '2024-01-18T15:30:00Z',
+      status: 'active'
+    },
+    {
+      id: 'AF-002',
+      title: 'Mercedes W204 Air Filter + Oil Filter',
+      type: 'fixed',
+      price: 35.99,
+      quantity: 15,
+      sold: 8,
+      watchers: 34,
+      views: 567,
+      status: 'active'
+    },
+    {
+      id: 'HL-003',
+      title: 'Audi A4 B8 Xenon Headlights OEM',
+      type: 'auction',
+      currentBid: 245.00,
+      buyNowPrice: 299.99,
+      bidsCount: 45,
+      watchers: 156,
+      views: 2341,
+      endTime: '2024-01-20T18:20:00Z',
+      status: 'ending-soon'
+    }
+  ];
+
+  const performanceData = [
+    { period: 'This week', sales: 1247.50, orders: 12, views: 2456 },
+    { period: 'Last week', sales: 2156.30, orders: 18, views: 3234 },
+    { period: 'This month', sales: 5678.90, orders: 45, views: 8901 },
+    { period: 'Last month', sales: 7234.20, orders: 67, views: 11234 }
+  ];
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: TrendingUp },
+    { id: 'listings', label: 'Active listings', icon: Package },
+    { id: 'orders', label: 'Sold', icon: ShoppingCart },
+    { id: 'messages', label: 'Messages', icon: MessageCircle },
+    { id: 'performance', label: 'Performance', icon: TrendingUp },
+    { id: 'settings', label: 'Account', icon: Settings }
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'shipped': return 'text-blue-600 bg-blue-100';
+      case 'processing': return 'text-yellow-600 bg-yellow-100';
+      case 'delivered': return 'text-green-600 bg-green-100';
+      case 'active': return 'text-green-600 bg-green-100';
+      case 'ending-soon': return 'text-red-600 bg-red-100';
+      default: return 'text-gray-600 bg-gray-100';
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'shipped': return <Truck className="h-4 w-4" />;
+      case 'processing': return <Clock className="h-4 w-4" />;
+      case 'delivered': return <CheckCircle className="h-4 w-4" />;
+      case 'active': return <CheckCircle className="h-4 w-4" />;
+      case 'ending-soon': return <AlertCircle className="h-4 w-4" />;
+      default: return <XCircle className="h-4 w-4" />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Seller Hub</h1>
+              <p className="text-gray-600">Manage your CarParts.bg business</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center">
+                <Plus className="h-4 w-4 mr-2" />
+                Create listing
+              </button>
+              <button className="border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50">
+                <Settings className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Sidebar Navigation */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg p-4">
+              <nav className="space-y-1">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`w-full flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        activeTab === tab.id
+                          ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-600'
+                          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4 mr-3" />
+                      {tab.label}
+                      {tab.id === 'messages' && stats.messagesUnread > 0 && (
+                        <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                          {stats.messagesUnread}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            {/* Overview Tab */}
+            {activeTab === 'overview' && (
+              <div className="space-y-6">
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">Total Sales</p>
+                        <p className="text-2xl font-bold text-gray-900">€{stats.totalSales.toLocaleString()}</p>
+                      </div>
+                      <div className="bg-green-100 p-2 rounded-lg">
+                        <DollarSign className="h-6 w-6 text-green-600" />
+                      </div>
+                    </div>
+                    <div className="mt-2 text-sm text-green-600">+12.5% from last month</div>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">Total Orders</p>
+                        <p className="text-2xl font-bold text-gray-900">{stats.totalOrders}</p>
+                      </div>
+                      <div className="bg-blue-100 p-2 rounded-lg">
+                        <ShoppingCart className="h-6 w-6 text-blue-600" />
+                      </div>
+                    </div>
+                    <div className="mt-2 text-sm text-blue-600">+8.2% from last month</div>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">Active Listings</p>
+                        <p className="text-2xl font-bold text-gray-900">{stats.activeListings}</p>
+                      </div>
+                      <div className="bg-purple-100 p-2 rounded-lg">
+                        <Package className="h-6 w-6 text-purple-600" />
+                      </div>
+                    </div>
+                    <div className="mt-2 text-sm text-purple-600">{stats.soldThisMonth} sold this month</div>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">Average Rating</p>
+                        <p className="text-2xl font-bold text-gray-900">{stats.averageRating}</p>
+                      </div>
+                      <div className="bg-yellow-100 p-2 rounded-lg">
+                        <Star className="h-6 w-6 text-yellow-600" />
+                      </div>
+                    </div>
+                    <div className="mt-2 text-sm text-yellow-600">From 2,847 reviews</div>
+                  </div>
+                </div>
+
+                {/* Recent Activity */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Recent Orders */}
+                  <div className="bg-white rounded-lg border border-gray-200">
+                    <div className="p-6 border-b border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold">Recent Orders</h3>
+                        <button className="text-blue-600 hover:text-blue-800 text-sm">View all</button>
+                      </div>
+                    </div>
+                    <div className="divide-y divide-gray-200">
+                      {recentOrders.slice(0, 3).map((order) => (
+                        <div key={order.id} className="p-6">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium text-sm">{order.item}</span>
+                            <span className={`px-2 py-1 rounded-full text-xs flex items-center ${getStatusColor(order.status)}`}>
+                              {getStatusIcon(order.status)}
+                              <span className="ml-1 capitalize">{order.status}</span>
+                            </span>
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            <p>Buyer: {order.buyer}</p>
+                            <p>Amount: €{order.amount}</p>
+                            <p>Date: {order.date}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Performance Metrics */}
+                  <div className="bg-white rounded-lg border border-gray-200">
+                    <div className="p-6 border-b border-gray-200">
+                      <h3 className="text-lg font-semibold">Performance Metrics</h3>
+                    </div>
+                    <div className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Total Views</span>
+                          <span className="font-semibold">{stats.totalViews.toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Watchers</span>
+                          <span className="font-semibold">{stats.watchersCount}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Conversion Rate</span>
+                          <span className="font-semibold text-green-600">7.2%</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Avg. Selling Price</span>
+                          <span className="font-semibold">€65.16</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors">
+                      <Plus className="h-6 w-6 mr-2 text-gray-600" />
+                      <span>Create new listing</span>
+                    </button>
+                    <button className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors">
+                      <Download className="h-6 w-6 mr-2 text-gray-600" />
+                      <span>Bulk import items</span>
+                    </button>
+                    <button className="flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-colors">
+                      <TrendingUp className="h-6 w-6 mr-2 text-gray-600" />
+                      <span>View analytics</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Active Listings Tab */}
+            {activeTab === 'listings' && (
+              <div className="space-y-6">
+                {/* Listings Header */}
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold">Active Listings ({activeListings.length})</h2>
+                    <div className="flex items-center space-x-3">
+                      <div className="relative">
+                        <Search className="h-4 w-4 absolute left-3 top-3 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Search listings..."
+                          className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                      <button className="flex items-center px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
+                        <Filter className="h-4 w-4 mr-2" />
+                        Filter
+                      </button>
+                      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center text-sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        New listing
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Listings Table */}
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Item
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Type
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Price/Bid
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Activity
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {activeListings.map((listing) => (
+                          <tr key={listing.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center">
+                                <div className="h-12 w-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                                  <span className="text-lg">🔧</span>
+                                </div>
+                                <div>
+                                  <div className="text-sm font-medium text-gray-900 line-clamp-1">
+                                    {listing.title}
+                                  </div>
+                                  <div className="text-sm text-gray-500">ID: {listing.id}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                listing.type === 'auction' 
+                                  ? 'bg-blue-100 text-blue-800' 
+                                  : 'bg-green-100 text-green-800'
+                              }`}>
+                                {listing.type === 'auction' ? '🔨 Auction' : '💰 Fixed Price'}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              {listing.type === 'auction' ? (
+                                <div>
+                                  <div className="text-sm font-medium text-green-600">
+                                    €{listing.currentBid?.toFixed(2)}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    Buy Now: €{listing.buyNowPrice?.toFixed(2)}
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="text-sm font-medium text-gray-900">
+                                  €{listing.price?.toFixed(2)}
+                                </div>
+                              )}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              <div className="space-y-1">
+                                <div className="flex items-center">
+                                  <Eye className="h-3 w-3 mr-1 text-gray-400" />
+                                  <span>{listing.views} views</span>
+                                </div>
+                                <div className="flex items-center">
+                                  <span className="text-orange-600">❤</span>
+                                  <span className="ml-1">{listing.watchers} watching</span>
+                                </div>
+                                {listing.bidsCount && (
+                                  <div className="text-blue-600 text-xs">
+                                    {listing.bidsCount} bids
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(listing.status)}`}>
+                                {getStatusIcon(listing.status)}
+                                <span className="ml-1 capitalize">{listing.status.replace('-', ' ')}</span>
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <div className="flex items-center space-x-2">
+                                <button className="text-blue-600 hover:text-blue-800">Edit</button>
+                                <button className="text-red-600 hover:text-red-800">End</button>
+                                <button className="text-gray-600 hover:text-gray-800">View</button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Orders Tab */}
+            {activeTab === 'orders' && (
+              <div className="space-y-6">
+                {/* Orders Header */}
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold">Recent Orders</h2>
+                    <div className="flex items-center space-x-3">
+                      <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                        <option>All orders</option>
+                        <option>Pending</option>
+                        <option>Shipped</option>
+                        <option>Delivered</option>
+                      </select>
+                      <button className="flex items-center px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        Last 30 days
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Orders List */}
+                <div className="bg-white rounded-lg border border-gray-200">
+                  <div className="divide-y divide-gray-200">
+                    {recentOrders.map((order) => (
+                      <div key={order.id} className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center">
+                            <div className="h-16 w-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                              <span className="text-2xl">🔧</span>
+                            </div>
+                            <div>
+                              <h3 className="font-medium text-gray-900">{order.item}</h3>
+                              <p className="text-sm text-gray-600">Order #{order.id}</p>
+                              <p className="text-sm text-gray-600">Buyer: {order.buyer}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold text-gray-900">€{order.amount}</div>
+                            <div className="text-sm text-gray-600">{order.date}</div>
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-1 ${getStatusColor(order.status)}`}>
+                              {getStatusIcon(order.status)}
+                              <span className="ml-1 capitalize">{order.status}</span>
+                            </span>
+                          </div>
+                        </div>
+                        
+                        {order.tracking && (
+                          <div className="bg-blue-50 p-3 rounded-lg">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-blue-800">Tracking: {order.tracking}</span>
+                              <button className="text-blue-600 hover:text-blue-800 text-sm underline">
+                                Track package
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div className="flex items-center justify-end space-x-3 mt-4">
+                          <button className="text-gray-600 hover:text-gray-800 text-sm">
+                            View details
+                          </button>
+                          <button className="text-blue-600 hover:text-blue-800 text-sm">
+                            Contact buyer
+                          </button>
+                          {order.status === 'processing' && (
+                            <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                              Mark as shipped
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Messages Tab */}
+            {activeTab === 'messages' && (
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 className="text-xl font-semibold mb-4">Messages</h2>
+                <div className="text-center py-12">
+                  <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No new messages</h3>
+                  <p className="text-gray-600">Customer messages will appear here</p>
+                </div>
+              </div>
+            )}
+
+            {/* Performance Tab */}
+            {activeTab === 'performance' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-semibold">Performance Analytics</h2>
+                    <select 
+                      value={selectedPeriod}
+                      onChange={(e) => setSelectedPeriod(e.target.value)}
+                      className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    >
+                      <option value="7days">Last 7 days</option>
+                      <option value="30days">Last 30 days</option>
+                      <option value="90days">Last 90 days</option>
+                      <option value="1year">Last year</option>
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    {performanceData.map((data, index) => (
+                      <div key={index} className="border border-gray-200 rounded-lg p-4">
+                        <h3 className="text-sm font-medium text-gray-600 mb-2">{data.period}</h3>
+                        <div className="space-y-2">
+                          <div>
+                            <span className="text-lg font-bold text-green-600">€{data.sales.toFixed(2)}</span>
+                            <span className="text-xs text-gray-500 ml-2">sales</span>
+                          </div>
+                          <div>
+                            <span className="text-sm font-medium">{data.orders}</span>
+                            <span className="text-xs text-gray-500 ml-1">orders</span>
+                          </div>
+                          <div>
+                            <span className="text-sm font-medium">{data.views}</span>
+                            <span className="text-xs text-gray-500 ml-1">views</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Performance Chart Placeholder */}
+                  <div className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+                    <h3 className="font-medium mb-4">Sales Trend</h3>
+                    <div className="h-64 flex items-center justify-center text-gray-500">
+                      📈 Sales chart would go here
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Settings Tab */}
+            {activeTab === 'settings' && (
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 className="text-xl font-semibold mb-6">Account Settings</h2>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="font-medium mb-3">Business Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+                        <input type="text" value="AutoParts Sofia Pro" className="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
+                        <input type="email" value="contact@autopartssofia.bg" className="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-medium mb-3">Shipping Settings</h3>
+                    <div className="space-y-3">
+                      <label className="flex items-center">
+                        <input type="checkbox" checked className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-3 text-sm">Offer free shipping on orders over €50</span>
+                      </label>
+                      <label className="flex items-center">
+                        <input type="checkbox" checked className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                        <span className="ml-3 text-sm">Same-day shipping available</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
