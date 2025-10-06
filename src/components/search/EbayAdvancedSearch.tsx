@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Filter, ChevronDown, ChevronUp, Star, MapPin, Truck, Calendar, DollarSign } from 'lucide-react';
+import { Search, Filter, ChevronDown, ChevronUp, Star, MapPin, Truck, Calendar, DollarSign, Car } from 'lucide-react';
 
 interface SearchFilters {
   category: string;
@@ -219,7 +219,8 @@ export default function EbayAdvancedSearch() {
               <div className="space-y-6">
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
-                    🚗 Vehicle Information
+                    <Car className="w-5 h-5 mr-2" />
+                    Vehicle Information
                   </h3>
                   <div className="space-y-3">
                     <div>

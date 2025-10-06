@@ -8,7 +8,7 @@
 
 'use client';
 
-import { Bell, MessageSquare, Settings, Search, HelpCircle, User } from 'lucide-react';
+import { Bell, MessageSquare, Settings, Search, HelpCircle, User, Car } from 'lucide-react';
 
 interface DashboardHeaderProps {
   userName: string;
@@ -32,8 +32,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           {/* Logo & Brand */}
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h2 className="text-xl font-bold text-blue-600">
-                🚗 CAR PARTS BG
+              <h2 className="text-xl font-bold text-blue-600 flex items-center">
+                <Car className="w-6 h-6 mr-2" />
+                CAR PARTS BG
               </h2>
             </div>
             <nav className="hidden md:ml-8 md:flex md:space-x-8">

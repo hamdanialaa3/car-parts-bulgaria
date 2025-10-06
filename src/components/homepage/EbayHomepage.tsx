@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, ChevronDown, ShoppingCart, User, Heart, Bell, MapPin, Truck, Shield, Clock, TrendingUp } from 'lucide-react';
+import { Search, ChevronDown, ShoppingCart, User, Heart, Bell, MapPin, Truck, Shield, Clock, TrendingUp, Wrench, RotateCcw, Zap, Car, Settings, Disc } from 'lucide-react';
 import Link from 'next/link';
 
 export default function EbayHomepage() {
@@ -10,12 +10,12 @@ export default function EbayHomepage() {
 
   // Mock data for eBay-style sections
   const featuredCategories = [
-    { id: 'engine', name: 'Engine Parts', icon: '🔧', count: '12,234', image: '/categories/engine.jpg' },
-    { id: 'brakes', name: 'Brake System', icon: '🛑', count: '8,456', image: '/categories/brakes.jpg' },
-    { id: 'electrical', name: 'Electrical', icon: '⚡', count: '15,789', image: '/categories/electrical.jpg' },
-    { id: 'body', name: 'Body Parts', icon: '🚗', count: '9,234', image: '/categories/body.jpg' },
-    { id: 'interior', name: 'Interior', icon: '🪑', count: '6,123', image: '/categories/interior.jpg' },
-    { id: 'wheels', name: 'Wheels & Tires', icon: '🛞', count: '11,456', image: '/categories/wheels.jpg' },
+    { id: 'engine', name: 'Engine Parts', icon: Wrench, count: '12,234', image: '/categories/engine.jpg' },
+    { id: 'brakes', name: 'Brake System', icon: RotateCcw, count: '8,456', image: '/categories/brakes.jpg' },
+    { id: 'electrical', name: 'Electrical', icon: Zap, count: '15,789', image: '/categories/electrical.jpg' },
+    { id: 'body', name: 'Body Parts', icon: Car, count: '9,234', image: '/categories/body.jpg' },
+    { id: 'interior', name: 'Interior', icon: Settings, count: '6,123', image: '/categories/interior.jpg' },
+    { id: 'wheels', name: 'Wheels & Tires', icon: Disc, count: '11,456', image: '/categories/wheels.jpg' },
   ];
 
   const hotDeals = [
@@ -259,7 +259,9 @@ export default function EbayHomepage() {
                 className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow group"
               >
                 <div className="text-center">
-                  <div className="text-3xl mb-2">{category.icon}</div>
+                  <div className="text-3xl mb-2">
+                    <category.icon className="w-8 h-8 mx-auto text-gray-600 group-hover:text-blue-600" />
+                  </div>
                   <h3 className="font-medium text-sm mb-1 group-hover:text-blue-600">
                     {category.name}
                   </h3>
@@ -299,7 +301,7 @@ export default function EbayHomepage() {
                 {/* Product Image */}
                 <div className="relative h-48 bg-gray-100 rounded-t-lg overflow-hidden">
                   <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                    <span className="text-4xl">🔧</span>
+                    <Wrench className="w-16 h-16 text-gray-400" />
                   </div>
                   
                   {/* Time Left */}

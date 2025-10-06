@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Heart, Share2, Flag, Eye, Clock, Shield, Truck, RotateCcw, MessageCircle, MapPin, Store, Award, ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
+import { Heart, Share2, Flag, Eye, Clock, Shield, Truck, RotateCcw, MessageCircle, MapPin, Store, Award, ChevronLeft, ChevronRight, Minus, Plus, Wrench } from 'lucide-react';
 
 export default function EbayProductPage() {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -96,10 +96,10 @@ export default function EbayProductPage() {
   ];
 
   const tabs = [
-    { id: 'description', label: 'Description', icon: '📝' },
-    { id: 'compatibility', label: 'Compatibility', icon: '🔧' },
-    { id: 'shipping', label: 'Shipping & Returns', icon: '🚚' },
-    { id: 'reviews', label: 'Reviews (45)', icon: '⭐' }
+    { id: 'description', label: 'Description', icon: MessageCircle },
+    { id: 'compatibility', label: 'Compatibility', icon: Shield },
+    { id: 'shipping', label: 'Shipping & Returns', icon: Truck },
+    { id: 'reviews', label: 'Reviews (45)', icon: Award }
   ];
 
   return (
@@ -128,7 +128,7 @@ export default function EbayProductPage() {
               <div className="relative mb-4">
                 <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                   <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                    <span className="text-6xl">🔧</span>
+                    <Wrench className="w-24 h-24 text-gray-400" />
                   </div>
                 </div>
                 
@@ -157,7 +157,7 @@ export default function EbayProductPage() {
                     }`}
                   >
                     <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                      <span className="text-sm">🔧</span>
+                      <Wrench className="w-6 h-6 text-gray-400" />
                     </div>
                   </button>
                 ))}
@@ -179,7 +179,7 @@ export default function EbayProductPage() {
                           : 'border-transparent text-gray-600 hover:text-gray-900'
                       }`}
                     >
-                      <span className="mr-2">{tab.icon}</span>
+                      <tab.icon className="w-4 h-4 mr-2" />
                       {tab.label}
                     </button>
                   ))}
@@ -521,7 +521,7 @@ export default function EbayProductPage() {
             {similarItems.map((item) => (
               <div key={item.id} className="bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-shadow">
                 <div className="aspect-square bg-gray-100 rounded-t-lg flex items-center justify-center">
-                  <span className="text-4xl">🔧</span>
+                  <Wrench className="w-16 h-16 text-gray-400" />
                 </div>
                 <div className="p-4">
                   <h3 className="font-medium text-sm mb-2 line-clamp-2">{item.title}</h3>

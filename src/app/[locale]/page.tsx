@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import Header from '@/components/layout/Header';
 import AdvancedSearch from '@/components/search/AdvancedSearch';
 import Link from 'next/link';
+import { Wrench, RotateCcw, Zap, Car, Settings, Building2, Package, Users } from 'lucide-react';
 
 interface HomePageProps {
   params: {
@@ -17,35 +18,35 @@ export default function HomePage({ params: { locale } }: HomePageProps) {
     {
       id: 'engine',
       name: t('parts.categories.engine'),
-      icon: '🔧',
+      icon: Wrench,
       count: '1,234',
       image: '/images/categories/engine.jpg'
     },
     {
       id: 'brakes',
       name: t('parts.categories.brakes'),
-      icon: '🛞',
+      icon: RotateCcw,
       count: '856',
       image: '/images/categories/brakes.jpg'
     },
     {
       id: 'electrical',
       name: t('parts.categories.electrical'),
-      icon: '⚡',
+      icon: Zap,
       count: '642',
       image: '/images/categories/electrical.jpg'
     },
     {
       id: 'body',
       name: t('parts.categories.body'),
-      icon: '🚗',
+      icon: Car,
       count: '923',
       image: '/images/categories/body.jpg'
     },
     {
       id: 'suspension',
       name: t('parts.categories.suspension'),
-      icon: '🔩',
+      icon: Settings,
       count: '567',
       image: '/images/categories/suspension.jpg'
     },
@@ -60,10 +61,10 @@ export default function HomePage({ params: { locale } }: HomePageProps) {
 
   // Featured stats - Mobile.de inspired
   const stats = [
-    { label: 'Резервни части', value: '50,000+', icon: '🔧' },
-    { label: 'Доставчици', value: '2,500+', icon: '🏪' },
-    { label: 'Продажби', value: '100,000+', icon: '📦' },
-    { label: 'Клиенти', value: '25,000+', icon: '👥' }
+    { label: 'Резервни части', value: '50,000+', icon: Wrench },
+    { label: 'Доставчици', value: '2,500+', icon: Building2 },
+    { label: 'Продажби', value: '100,000+', icon: Package },
+    { label: 'Клиенти', value: '25,000+', icon: Users }
   ];
 
   return (
@@ -102,7 +103,9 @@ export default function HomePage({ params: { locale } }: HomePageProps) {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-4xl mb-2">{stat.icon}</div>
+                <div className="text-4xl mb-2">
+                  <stat.icon className="w-12 h-12 mx-auto text-primary-600" />
+                </div>
                 <div className="text-3xl font-bold text-gray-900 mb-1">
                   {stat.value}
                 </div>
@@ -136,7 +139,7 @@ export default function HomePage({ params: { locale } }: HomePageProps) {
                 className="card card-hover group"
               >
                 <div className="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center text-4xl">
-                  {category.icon}
+                  <category.icon className="w-12 h-12 text-gray-600 group-hover:text-primary-600 transition-colors" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">
                   {category.name}
